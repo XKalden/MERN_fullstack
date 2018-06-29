@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 //api routes 
 const users = require('./routes/api/users');
@@ -7,7 +8,15 @@ const profile = require('./routes/api/profile');
 const posts = require('./routes/api/posts');
 
 
+
 const app = express();
+
+// Body parser middleware (--- post request return json data)
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
+
+
 // DB config
 const db = require('./config/keys').mongoURI;
 // DB connect to mongoDB
@@ -17,7 +26,7 @@ mongoose
     .catch((err) => console.log(err));
 
 
-app.get('/', (req,res) => res.send('wpw'));
+app.get('/', (req,res) => res.send('wow'));
 
 // port routes
 app.use('/api/users', users);

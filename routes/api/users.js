@@ -9,8 +9,11 @@ const User = require('../../models/User');
 // Json webtoken 
 const jwt = require('jsonwebtoken');
 const keys = require('../../config/keys');
-
 const passport = require('passport');
+
+// Load Input Validation
+const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require('../../validation/login');
 
 
 
@@ -25,10 +28,20 @@ router.get('/test', (req, res) => {res.json({msg: 'Users Works'})});
 // @dec         Register user
 // @access      Public
 router.post('/register', (req,res) => {
+    const { errors, isValid } = validateRegisterInput(req.body);
+
+    // Check Validation
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+
     User.findOne({ email: req.body.email})
         .then(user => {
+
             if(user) {
-                return res.status(400).json({email: 'Email already Exists'});
+                errors.email = 'Email already Exists'
+                return res.status(400).json(errors);
+
             } else {
                 // gravitar image generator 
                 const avatar = gravitar.url(req.body.email, {
@@ -65,6 +78,13 @@ router.post('/register', (req,res) => {
 // @dec         Login User / Return JWT Token
 // @access      Public
 router.post('/login', (req,res) => {
+
+    const {errors, isValid} = validateLoginInput(req.body);
+
+    if(!isValid){
+        return res.status(400).json(errors);
+    }
+
     const email = req.body.email;
     const password = req.body.password;
 
@@ -73,7 +93,8 @@ router.post('/login', (req,res) => {
         .then(user => {
             //check user 
             if(!user){
-                return res.status(404).json({email: 'User not Found'});
+                errors.email = 'User not found'
+                return res.status(404).json(errors);
             }
             // check Password
             bcrypt.compare(password, user.password)
@@ -81,9 +102,8 @@ router.post('/login', (req,res) => {
                     if(isMatch){
                         // user matched
                         const payload = {id: user.id, name: user.name, avatar: user.avatar} // create JWT Payload
-                    
-
-                        //Sign token
+            
+                        //Sign build token
                         jwt.sign(payload, keys.jwtkey, { expiresIn: 3600 }, (err, token) => {
                             res.json({
                                 success: true,
@@ -92,7 +112,8 @@ router.post('/login', (req,res) => {
                         });
 
                     } else {
-                        return res.status(400).json({password: 'Password incorrect'});
+                        errors.password = 'Password incorrect'
+                        return res.status(400).json(errors);
                     }
                 })
         });

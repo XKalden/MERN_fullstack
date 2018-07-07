@@ -35,6 +35,9 @@ require('./config/passport')(passport);
 
 app.get('/', (req,res) => res.send('wow'));
 
+
+
+
 // port routes
 app.use('/api/users', users);
 app.use('/api/profile', profile);

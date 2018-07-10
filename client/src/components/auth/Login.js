@@ -1,4 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+
+import PropTypes from 'prop-types';
+// classname error message
+import classnames from 'classnames'
+
+import { loginUser } from '../../actions/authActions';
 
 class Login extends Component {
     constructor(){
@@ -17,6 +24,18 @@ class Login extends Component {
 
     }
 
+    
+    componentDidUpdate(prevProps, prevState){
+
+        if(prevProps.auth.isAuthenticated){
+            this.props.history.push('/dashboard');
+
+        }
+        if(prevState.errors !== this.props.errors){
+            this.setState({errors: this.props.errors})
+        }
+    }
+
     onSubmit = (e) => {
         e.preventDefault();
 
@@ -26,13 +45,18 @@ class Login extends Component {
         }
 
         console.log(currentUser);
+        
+
+        this.props.loginUser(currentUser);
 
 
     }
 
     render() {
+
+        const {errors} = this.state;
+
         return (
-            
             <div className="login">
                 <div className="container">
                     <div className="row">
@@ -40,24 +64,30 @@ class Login extends Component {
                         <h1 className="display-4 text-center">Log In</h1>
                         <p className="lead text-center">Sign in to your DevConnector account</p>
                         { /* Form */ }
-                        <form action="dashboard.html" onSubmit={this.onSubmit}>
+                        <form noValidate action="dashboard.html" onSubmit={this.onSubmit}>
                             <div className="form-group">
                                 <input 
                                     type="email" 
-                                    className="form-control form-control-lg" 
+                                    className={ classnames('form-control form-control-lg', {
+                                        'is-invalid' : errors.email 
+                                    })} 
                                     placeholder="Email Address" 
                                     name="email" 
                                     value={this.state.email}
                                     onChange={this.onChange}/>
+                                    { errors.email && (<div className="invalid-feedback"> {errors.email} </div>)}
                             </div>
                             <div className="form-group">
                                 <input 
                                     type="password" 
-                                    className="form-control form-control-lg" 
+                                    className={ classnames('form-control form-control-lg', {
+                                        'is-invalid' : errors.password 
+                                    })} 
                                     placeholder="Password" 
                                     name="password" 
                                     value={this.state.password}
                                     onChange={this.onChange}/>
+                                    { errors.password && (<div className="invalid-feedback"> {errors.password} </div>)}
                             </div>
                             <input type="submit" className="btn btn-info btn-block mt-4" />
                         </form>
@@ -69,4 +99,21 @@ class Login extends Component {
     }
 }
 
-export default Login;
+
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+    errors : state.errors
+});
+
+// React Data Type check
+Login.propsTypes = {
+    loginUser : PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    error: PropTypes.object.isRequired
+}
+
+
+
+
+
+export default connect(mapStateToProps, {loginUser})(Login);

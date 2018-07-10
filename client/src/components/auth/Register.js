@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
-import axios from 'axios';
-import classnames from 'classnames';
 
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+
+
+import { connect } from 'react-redux';
+import { registerUser } from '../../actions/authActions';
 
 
 class Register extends Component {
@@ -23,8 +28,6 @@ class Register extends Component {
         // let e = e.target.value;
         this.setState({ [e.target.name] : e.target.value });
 
-
-
     }
 
     onSubmit = (e) => {
@@ -37,21 +40,40 @@ class Register extends Component {
         }
         console.log(newUser);
 
-        axios.post( '/api/users/register', newUser)
-            .then(res => console.log(res.data))
-            .catch(err => this.setState({errors: err.response.data}))
-        
+        // axios.post( '/api/users/register', newUser)
+        //     .then(res => console.log(res.data))
+        //     .catch(err => this.setState({errors: err.response.data}))
+
+        // reducer 
+        this.props.registerUser(newUser, this.props.history);
+
+    }
+
+    // componentWillReceiveProps(nextProps){
+    //     if(nextProps.errors){
+    //         this.setState({errors: nextProps.errors});
+
+    //     }
+    // }
+
+    componentDidUpdate(prevProps, prevState){
+        if(prevState.errors !== this.props.errors){
+            this.setState({errors: this.props.errors})
+        }
     }
 
 
 
     render() {
-
         const {errors} = this.state;
 
+        // Redux state
+        const  {user} = this.props.auth;
         return (
             // Regitser
             <div className="register">
+                {user ? user.name : null}
+
                 <div className="container">
                     <div className="row">
                     <div className="col-md-8 m-auto">
@@ -70,7 +92,7 @@ class Register extends Component {
                                     value={this.state.name} 
                                     onChange={this.onChange}/>
 
-                                    { errors.name && (<div class="invalid-feedback"> {errors.name} </div>)}
+                                    { errors.name && (<div className="invalid-feedback"> {errors.name} </div>)}
                             </div>
                             <div className="form-group">
                                 <input 
@@ -82,7 +104,7 @@ class Register extends Component {
                                     name="email"
                                     value={this.state.email}
                                     onChange={this.onChange} />
-                                    { errors.email && (<div class="invalid-feedback"> {errors.email} </div>)}
+                                    { errors.email && (<div className="invalid-feedback"> {errors.email} </div>)}
 
 
                                     <small className="form-text text-muted">This site uses Gravatar so if you want a profile image, use a Gravatar email</small>
@@ -96,7 +118,7 @@ class Register extends Component {
                                     name="password"
                                     value={this.state.password} 
                                     onChange={this.onChange} />
-                                    { errors.password && (<div class="invalid-feedback"> {errors.password} </div>)}
+                                    { errors.password && (<div className="invalid-feedback"> {errors.password} </div>)}
                             </div>
                             <div className="form-group">
                                 <input 
@@ -108,7 +130,7 @@ class Register extends Component {
                                     name="password2"
                                     value={this.state.password2} 
                                     onChange={this.onChange} />
-                                    { errors.password2 && (<div class="invalid-feedback"> {errors.password2} </div>)}
+                                    { errors.password2 && (<div className="invalid-feedback"> {errors.password2} </div>)}
                             </div>
                             
                             <input type="submit" className="btn btn-info btn-block mt-4" />
@@ -121,4 +143,23 @@ class Register extends Component {
     }
 }
 
-export default Register;
+
+
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+    errors : state.errors
+});
+
+
+
+
+// React Data Type check
+Register.propsTypes = {
+    registerUser : PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    error: PropTypes.object.isRequired
+}
+
+
+
+export default connect(mapStateToProps, {registerUser})(withRouter(Register));

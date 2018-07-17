@@ -24,8 +24,6 @@ export const getCurrentProfile = () => dispatch => {
       );
   };
 
-
-
 // Create Profile
 export const createProfile = (profileData, history) => dispatch => {
   axios
@@ -58,10 +56,6 @@ export const deleteAccount = () => dispatch => {
   }
 }
 
-
-
-
-
 // Profile Loading
 export const setProfileLoading = () => {
     return {
@@ -74,3 +68,49 @@ export const clearCurrentProfile = () => {
         type: CLEAR_CURRENT_PROFILE
     }
 }
+
+
+// Add expeirence 
+export const addExperience = (expData, history) => dispatch => {
+  axios
+    .post('/api/profile/experience', expData)
+    .then(res => history.push('/dashboard'))
+    .catch(err => dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+    }));
+}
+
+
+//Delet experience 
+export const deleteExperience = (id) => dispatch => {
+  axios
+  .delete(`/api/profile/experience/${id}`)
+  .then(res => 
+    dispatch({
+      type: GET_PROFILE,
+      payload: res.data
+    })
+  )
+  .catch(err => dispatch({
+    type: GET_ERRORS,
+    payload: err.response.data
+  }));
+}
+
+
+// Add education
+export const addEducation = (eduData, history) => dispatch => {
+  axios
+    .post('/api/profile/education', eduData)
+    .then(res => history.push('/dashboard'))
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
+};
+
+
+

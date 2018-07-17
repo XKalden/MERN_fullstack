@@ -11,6 +11,9 @@ import Spinner from '../common/spinner';
 
 import ProfileAction from './ProfileAction';
 
+// Experience component
+import Experience from './Experience.js';
+
 
 
 class Dashboard extends Component {
@@ -25,8 +28,6 @@ class Dashboard extends Component {
 
 
     }
-
-
 
 
     render() {
@@ -44,11 +45,15 @@ class Dashboard extends Component {
                     <div>
                     <p className="lead text-muted">
                         Welcome <Link to={`/profile/${profile.handle}`}>{user.name}</Link>
+
                     </p>
                     
                     <ProfileAction />
 
                     { /* TODO: exp and edu */ }
+                    <Experience experience={profile.experience} />
+
+
 
 
                     <div style={{marginBottom: '60px'}}></div>

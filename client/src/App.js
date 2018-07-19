@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 // redux
-import {Provider } from 'react-redux';
+import { Provider } from 'react-redux';
 import store from './store';
 
 // Local Storage Token setup
@@ -27,8 +27,13 @@ import EditProfile from './components/edit-profile/EditProfile.js';
 import AddExperience from './components/add-credentials/AddExperience';
 
 import AddEducation from './components/add-credentials/AddEducation';
+import Profiles from './components/profiles/Profiles.js';
+import Profile from './components/profile/Profile.js';
+import NotFound from './components/not-found/NotFound';
 
-
+// Posts
+import Posts from './components/posts/Posts';
+import Post from './components/post/Post';
 
 
 
@@ -66,9 +71,10 @@ class App extends Component {
             <Route exact path="/" component={Landing} />
 
               <div className="container">
-                <Route exact path="/register" component={Register}/>
+                <Route exact path="/register" component={Register} />
                 <Route exact path="/login" component={Login} />
-
+                <Route exact path="/profiles" component={Profiles} />
+                <Route exact path="/profile/:handle" component={Profile} />
                 <Switch>
                   <PrivateRoute exact path="/dashboard" component={Dashboard} />
              
@@ -78,8 +84,10 @@ class App extends Component {
 
                   <PrivateRoute exact path="/add-experience" component={AddExperience} />
                   <PrivateRoute exact path="/add-education" component={AddEducation} />
-
+                  <PrivateRoute exact path="/feed" component={Posts} />
+                  <PrivateRoute exact path="/post/:id" component={Post} />
                 </Switch>
+                <Route exact path="/not-found" component={NotFound} />
               </div>
 
             <Footer />

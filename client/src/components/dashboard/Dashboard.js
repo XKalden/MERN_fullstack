@@ -13,6 +13,7 @@ import ProfileAction from './ProfileAction';
 
 // Experience component
 import Experience from './Experience.js';
+import Education from './Education';
 
 
 
@@ -52,7 +53,7 @@ class Dashboard extends Component {
 
                     { /* TODO: exp and edu */ }
                     <Experience experience={profile.experience} />
-
+                    <Education education={profile.education} />
 
 
 

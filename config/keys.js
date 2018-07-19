@@ -1,6 +1,7 @@
-module.exports = {
-    mongoURI: 'mongodb://kalden:mango619@ds221271.mlab.com:21271/mern',
-    jwtkey: 'kalden123'
-};
 
 
+if(process.env.NODE_ENV === 'production'){
+    module.exports = require('./keys_prod');
+} else {
+    module.exports = require('./keys_dev');
+}

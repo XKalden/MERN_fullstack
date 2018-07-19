@@ -45,6 +45,7 @@ module.exports = {
 ```
 // path module
 const path = require('path');
+
 // Server static assets if in Production
 if(process.env.NODE_ENV === 'production'){
     // Set static folder
